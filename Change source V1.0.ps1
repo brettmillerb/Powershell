@@ -1,5 +1,4 @@
 # Lifted from http://www.scconfigmgr.com/2013/07/25/update-the-content-path-of-all-applications-in-configmgr-2012-with-powershell/
-# Modified for BB env prior to Huxley move by PdeB
 
 [System.Reflection.Assembly]::LoadFrom((Join-Path (Get-Item $env:SMS_ADMIN_UI_PATH).Parent.FullName "Microsoft.ConfigurationManagement.ApplicationManagement.dll")) | Out-Null
 [System.Reflection.Assembly]::LoadFrom((Join-Path (Get-Item $env:SMS_ADMIN_UI_PATH).Parent.FullName "Microsoft.ConfigurationManagement.ApplicationManagement.Extender.dll")) | Out-Null
@@ -9,15 +8,15 @@ $SiteServer = "gbstvsccmpw001"
 $SiteCode = "PR1"
 
 # Content locations
-$CurrentContentPath = "\\sccmlibrary\e$\source\Applications"
-$UpdatedContentPath = "\\sccmlibrary\f$\source\Applications"
+$CurrentContentPath = "\\Server\Share\source\Applications"
+$UpdatedContentPath = "\\Server\Share\source\Applications"
 
 # Convert all to lower case
 $CurrentContentPath = $CurrentContentPath.ToLower()
 $UpdatedContentPath = $UpdatedContentPath.ToLower()
 
 # To be used when applying to only one application
-$applicationName = "BB OpportunityAndRiskFramework 4.1.2 x86"
+$applicationName = "Single Application Name for Testing"
 
 # To be used when applying to only one application
 $Applications = Get-WmiObject -ComputerName $SiteServer -Namespace root\SMS\site_$SiteCode -class SMS_Application | Where-Object { $_.LocalizedDisplayName -eq $applicationName -and $_.isLatest -eq $True }
