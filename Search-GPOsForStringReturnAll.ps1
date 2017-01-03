@@ -1,7 +1,8 @@
 ######################################################### 
 # 
 # Name: Search-GPOsForString.ps1 
-# Author: Tony Murray 
+# Author: Tony Murray
+# Amendments: Adam Fowler https://www.adamfowlerit.com/
 # Version: 1.0 
 # Date: 13/07/2016 
 # Comment: Simple search for GPOs within a domain 
