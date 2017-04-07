@@ -4,6 +4,9 @@ Powershell Functions that I use to do bits and pieces at work. I've appropriatel
 
 ## Cmdlets
 
+### Get-O365Licenses.ps1
+	Gets the O365 license count and usage
+
 ### Get-ADComputerOwner
 	Gets the owner of the Computer object from the ACL of the AD Object
 
