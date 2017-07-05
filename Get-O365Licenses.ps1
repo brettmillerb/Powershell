@@ -1,3 +1,4 @@
+function Get-O365Licenses {
 <#
 .SYNOPSIS
     Gets the current O365 license status
@@ -18,30 +19,22 @@
     Must be connected to AzureAD to run this script
     Use the Connect-AzureAD cmdlet to connect
 #>
-function Get-O365Licenses {
     [CmdletBinding()]
       
     Param (
     )
     
-    begin {}
-    
     process {
         $skus = Get-AzureADSubscribedSku
 
         foreach ($sku in $skus) {
-            $properties = [ordered]@{
+            [PSCustomObject]@{
                 Name = $sku.skupartnumber
                 LicensesTotal = $sku.prepaidunits.enabled
                 LicensesUsed = $sku.consumedunits
                 LicensesRemaining = ($sku.prepaidunits.enabled) - ($sku.consumedunits)
             }
-
-            $OutputObj = New-Object -TypeName psobject -Property $properties
-            Write-Output $OutputObj
         }
             
     }
-
-    end {}
 }
