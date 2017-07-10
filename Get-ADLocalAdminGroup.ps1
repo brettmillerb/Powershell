@@ -21,7 +21,7 @@
 
     Process {
         foreach ($computer in $computername) {
-            $groupname = "FUJ ac-{0}-LocalAdmin" -f $computer
+            $groupname = "OU ac-{0}-LocalAdmin" -f $computer
             try {
                 $group = get-adgroup $groupname -Properties members
                 [pscustomobject]@{
