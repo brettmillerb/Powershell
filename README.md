@@ -1,7 +1,6 @@
 # Powershell
 
-Powershell Functions that I use regularly at work. I've appropriately redacted them so that there is no identifying information present
-Feel free to utilise anything that you may find useful.
+Powershell Functions that I use regularly at work. I've appropriately redacted them so that there is no identifying information present.
 
 ## Cmdlets
 
