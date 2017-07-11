@@ -17,12 +17,18 @@ Powershell Functions that I use regularly at work. I've appropriately redacted t
 	Checks AD to see if a Local Admin Group exists for the corresponding computer account and it's members.
 
 ### Get-ADUserOwner
-	Gets the owner of the User object from the ACL of the AD Object
+	Gets the owner of the User object from the ACL of the AD Object.
 
-### Get-FSRM.ps1
-	Gets File Screen Monitoring filetypes from public API for recent ransomware attacks
+### Get-CMUserPrimaryDevice
+	Connects to SCCM and obtains a users primary device from the SMS database.
 
-### Get-O365Licenses.ps1
+### Get-FSMORoleLocations
+	Gets the servers which hold FSMO roles in domain.
+
+### Get-FSRM
+	Gets File Screen Monitoring filetypes from public API for recent ransomware attacks.
+
+### Get-O365Licenses
 	Gets the O365 license count and usage for SKU.
 
 ### Search-GPOsForStringReturnAll
