@@ -1,12 +1,22 @@
 function Connect-SCCM {
+    <#
+    .SYNOPSIS
+    Imports the Configuration Manager module, and maps drive to enable SCCM cmdlets to be used
+    
+    .DESCRIPTION
+    Imports the configuration manger module, maps new Ps-drive to SCCM server and sets location
+
+    .EXAMPLE
+    Connect-SCCM
+    
+    .NOTES
+    Needs x86 ISE/IDE
+    #>
     process {
-        #Import the Configuration Manager Module
         Import-Module "C:\Program Files (x86)\Configuration Manager\Console\bin\ConfigurationManager.psd1" -Global
 
-        #Create PSDrive with credentials that have rights in SCCM
         New-PSDrive -Name PR1 -PSProvider CMSite -Root 'sccm001.domain.com' -Credential (Get-Credential) -Scope global
 
-        #Setting the working directory to PR1
         Set-Location "PR1:"
     }
 }
