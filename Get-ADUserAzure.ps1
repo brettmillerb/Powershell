@@ -11,6 +11,9 @@ function Get-ADUserAzure {
     
     .EXAMPLE
     Get-ADUserAzure brett.miller
+
+    .EXAMPLE
+    (Get-ADUser brett.miller).samaccountname | Get-ADUserAzure
     
     .NOTES
     Saves having to type out the full UPN of a user to look them up in AzureAD
