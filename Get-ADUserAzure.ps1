@@ -1,4 +1,20 @@
 function Get-ADUserAzure {
+    <#
+    .SYNOPSIS
+    Gets the AzureAD account from the sAMAccountname of on-premises user
+    
+    .DESCRIPTION
+    Looks up the on-premises sAMAccountname and queries AzureAD using the UPN from the on-premises account.
+        
+    .PARAMETER username
+    sAMAccountname of on-premises user account
+    
+    .EXAMPLE
+    Get-ADUserAzure brett.miller
+    
+    .NOTES
+    Saves having to type out the full UPN of a user to look them up in AzureAD
+    #>
     [cmdletbinding()]
     Param (
         [Parameter(Mandatory=$true,
@@ -16,7 +32,7 @@ function Get-ADUserAzure {
                     throw "User does not exist"
                 }
         })]
-        [string]$username
+        [string[]]$username
     )
     process {
         get-azureaduser -objectid (get-aduser $username).userprincipalname
