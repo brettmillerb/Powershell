@@ -16,6 +16,9 @@ Powershell Functions that I use regularly at work. I've appropriately redacted t
 ### Get-ADLocalAdminGroup
 	Checks AD to see if a Local Admin Group exists for the corresponding computer account and it's members.
 
+### Get-ADUserAzure
+	Checks AzureAD using UPN from on-premises Active Directory account
+
 ### Get-ADUserOwner
 	Gets the owner of the User object from the ACL of the AD Object.
 
