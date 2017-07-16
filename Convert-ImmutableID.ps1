@@ -14,7 +14,7 @@ function Convert-ImmutableID {
     
     .NOTES
     You can get the ImmutableID running:
-    Get-AzureADUser -ObjectId brett.miller@balfourbeatty.com | Select-Object immutableid
+    Get-AzureADUser -ObjectId brett.miller@millerb.co.uk | Select-Object immutableid
     #>
     [CmdletBinding()]
     Param (
