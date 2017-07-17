@@ -26,18 +26,20 @@ function Get-ADUserAzure {
                    ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-        [ValidateScript({
+         [ValidateScript({
                 try {
-                    (Get-aduser $_ -ErrorAction Stop)
+                    (Get-aduser -identity $_ -ErrorAction Stop)
                     $true
                 }
                 catch {
                     throw "User does not exist"
                 }
-        })]
+        })] 
         [string[]]$username
     )
     process {
-        get-azureaduser -objectid (get-aduser $username).userprincipalname
+        foreach ($user in $username) {
+            get-azureaduser -objectid (get-aduser -Identity $user).userprincipalname
+        }
     }
 }
