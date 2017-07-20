@@ -38,13 +38,23 @@ function Get-AzureADUserLicenseSummary {
     process {
         foreach ($user in $ObjectID) {
             $userobj = Get-AzureADUser -ObjectId $user
-            $UserLicenses = Get-AzureADUserLicenseDetail -ObjectId $user
-
-            [pscustomobject]@{
-                DisplayName = $userobj.DisplayName
-                UserPrincipalName = $userobj.UserPrincipalName
-                Licenses = ($UserLicenses.skupartnumber).replace('STANDARDPACK','ENTERPRISE E1').replace('ENTERPRISEPACK','ENTERPRISE E3').replace('ENTERPRISEPREMIUM','ENTERPRISE E5').replace('SHAREPOINTSTANDARD','SHAREPOINT ONLINE')
-                Plans = ($UserLicenses.serviceplans | Where-Object ProvisioningStatus -EQ Success).serviceplanname
+            try {
+                $UserLicenses = Get-AzureADUserLicenseDetail -ObjectId $user
+                
+                [pscustomobject]@{
+                    DisplayName = $userobj.DisplayName
+                    UserPrincipalName = $userobj.UserPrincipalName
+                    Licenses = ($UserLicenses.skupartnumber).replace('STANDARDPACK','ENTERPRISE E1').replace('ENTERPRISEPACK','ENTERPRISE E3').replace('ENTERPRISEPREMIUM','ENTERPRISE E5').replace('SHAREPOINTSTANDARD','SHAREPOINT ONLINE')
+                    Plans = ($UserLicenses.serviceplans | Where-Object ProvisioningStatus -EQ Success).serviceplanname
+                }
+            }
+            catch {
+                [PSCustomObject]@{
+                    DisplayName = $userobj.DisplayName
+                    UserPrincipalName = $userobj.UserPrincipalName
+                    Licenses = $null
+                    Plans = $null
+                }
             }
         }
     }
