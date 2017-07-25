@@ -1,0 +1,67 @@
+{
+	/*
+	// Place your snippets for PowerShell here. Each snippet is defined under a snippet name and has a prefix, body and 
+	// description. The prefix is what is used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+	// $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders. Placeholders with the 
+	// same ids are connected.
+	// Example:
+	"Print to console": {
+		"prefix": "log",
+		"body": [
+			"console.log('$1');",
+			"$2"
+		],
+		"description": "Log output to console"
+	}
+*/
+	"365-LicenseObject": {
+		"prefix": "O365-LicenseObject",
+		"body": [
+			"$$enabledplans = 'SHAREPOINTWAC','YAMMER_ENTERPRISE','SHAREPOINTSTANDARD'",
+			"",
+			"#Get the licensesku and create the Disabled ServicePlans object",
+			"$$licensesku = Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -eq 'STANDARDPACK'} ",
+			"\r",
+			"#Loop through all the individual plans and disable all plans except the one in $$enabledplans",
+			"$$disabledplans = $$licensesku.ServicePlans | ForEach-Object -Process { ",
+			"$$_ | Where-Object -FilterScript {$_.ServicePlanName -notin $$enabledplans }",
+			"}",
+			"#Create the AssignedLicense object with the License and disabledplans created earlier\r",
+			"$$licenseobj = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense\r",
+			"$$licenseobj.SkuId = $$licensesku.SkuId\r",
+			"$$licenseobj.disabledplans = $$disabledplans.ServicePlanId\r",
+			"\r",
+			"#Create the AssignedLicenses Object. Remove Licenses has to be declared as a null value",
+			"$$assignedlicenseobj = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses\r",
+			"$$assignedlicenseobj.AddLicenses = $$licenseobj\r",
+			"$$assignedlicenseobj.RemoveLicenses = @()"
+		],
+		"description": "Creates an O365 License Object"
+	},
+	"Output-Object": {
+		"prefix": "Output Object",
+		"body": [
+			"$$OutputObj = New-Object -TypeName psobject -Property $$properties"
+		],
+		"description": "Creates a PSCustomObject"
+	},
+	"Select-Expression": {
+		"prefix": "Select-Expression",
+		"body": [
+			"Select-Object @{name='${PropertyName}';expression={$$_}}"
+		],
+		"description": "Creates a PSCustomObject"
+	},
+	"PSCustomObject": {
+		"prefix": "PSCustomObject",
+		"body": [
+			"[pscustomobject]@{\r",
+				"\t'${item1}' = ${Property1}\r",
+				"\t'${item2}' = ${Property2}\r",
+				"\t'${item3}' = ${Property3}\r",
+				"\t'${item4}' = ${Property4}\r",
+			"}"
+		],
+		"description": "Creates a PSCustomObject"
+	}
+}
