@@ -63,5 +63,20 @@
 			"}"
 		],
 		"description": "Creates a PSCustomObject"
+	},
+	"New-ADGroup": {
+		"prefix": "New-ADGroup",
+		"body": [
+			"$$params = @{\r",
+			"\tName = '${Groupname}'\r",
+			"\tSamAccountName = '${Groupname}'\r",
+			"\tGroupCategory = '${Category}'\r",
+			"\tGroupScope = '${GroupScope}'\r",
+			"\tpath = 'ou=${SubOU},ou=Groups,ou=${ParentOU},dc=bbds,dc=balfourbeatty,dc=com'\r",
+			"}\r",
+			"\r",
+			"\tNew-ADGroup @params\r"
+		],
+		"description": "Creates New AD Group Hashtable"
 	}
 }
