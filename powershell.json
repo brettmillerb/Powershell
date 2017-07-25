@@ -17,40 +17,40 @@
 	"365-LicenseObject": {
 		"prefix": "O365-LicenseObject",
 		"body": [
-			"$$enabledplans = 'SHAREPOINTWAC','YAMMER_ENTERPRISE','SHAREPOINTSTANDARD'",
+			"\\$enabledplans = 'SHAREPOINTWAC','YAMMER_ENTERPRISE','SHAREPOINTSTANDARD'",
 			"",
 			"#Get the licensesku and create the Disabled ServicePlans object",
-			"$$licensesku = Get-AzureADSubscribedSku | Where-Object {$_.SkuPartNumber -eq 'STANDARDPACK'} ",
+			"\\$licensesku = Get-AzureADSubscribedSku | Where-Object {\\$_.SkuPartNumber -eq '${License}'} ",
 			"\r",
-			"#Loop through all the individual plans and disable all plans except the one in $$enabledplans",
-			"$$disabledplans = $$licensesku.ServicePlans | ForEach-Object -Process { ",
-			"$$_ | Where-Object -FilterScript {$_.ServicePlanName -notin $$enabledplans }",
+			"#Loop through all the individual plans and disable all plans except the one in \\$enabledplans",
+			"\\$disabledplans = \\$licensesku.ServicePlans | ForEach-Object -Process { ",
+			"\\$_ | Where-Object -FilterScript {\\$_.ServicePlanName -notin \\$enabledplans }",
 			"}",
 			"#Create the AssignedLicense object with the License and disabledplans created earlier\r",
-			"$$licenseobj = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense\r",
-			"$$licenseobj.SkuId = $$licensesku.SkuId\r",
-			"$$licenseobj.disabledplans = $$disabledplans.ServicePlanId\r",
+			"\\$licenseobj = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicense\r",
+			"\\$licenseobj.SkuId = \\$licensesku.SkuId\r",
+			"\\$licenseobj.disabledplans = \\$disabledplans.ServicePlanId\r",
 			"\r",
 			"#Create the AssignedLicenses Object. Remove Licenses has to be declared as a null value",
-			"$$assignedlicenseobj = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses\r",
-			"$$assignedlicenseobj.AddLicenses = $$licenseobj\r",
-			"$$assignedlicenseobj.RemoveLicenses = @()"
+			"\\$assignedlicenseobj = New-Object -TypeName Microsoft.Open.AzureAD.Model.AssignedLicenses\r",
+			"\\$assignedlicenseobj.AddLicenses = \\$licenseobj\r",
+			"\\$assignedlicenseobj.RemoveLicenses = @()"
 		],
 		"description": "Creates an O365 License Object"
 	},
 	"Output-Object": {
 		"prefix": "Output Object",
 		"body": [
-			"$$OutputObj = New-Object -TypeName psobject -Property $$properties"
+			"\\$OutputObj = New-Object -TypeName psobject -Property \\$properties"
 		],
-		"description": "New-Object with pre-defined Properties"
+		"description": "Creates a PSCustomObject"
 	},
 	"Select-Expression": {
 		"prefix": "Select-Expression",
 		"body": [
-			"Select-Object @{name='${PropertyName}';expression={$$_}}"
+			"Select-Object @{name='${PropertyName}';expression={\\$_}}"
 		],
-		"description": "Custom Expression for Select-Object"
+		"description": "Creates a PSCustomObject"
 	},
 	"PSCustomObject": {
 		"prefix": "PSCustomObject",
@@ -67,12 +67,12 @@
 	"New-ADGroup": {
 		"prefix": "New-ADGroup",
 		"body": [
-			"$$params = @{\r",
+			"\\$params = @{\r",
 			"\tName = '${Groupname}'\r",
 			"\tSamAccountName = '${Groupname}'\r",
 			"\tGroupCategory = '${Category}'\r",
 			"\tGroupScope = '${GroupScope}'\r",
-			"\tpath = 'ou=${SubOU},ou=Groups,ou=${ParentOU},dc=fqdn,dc=domain,dc=com'\r",
+			"\tpath = 'ou=${SubOU},ou=Groups,ou=${ParentOU},dc=bbds,dc=balfourbeatty,dc=com'\r",
 			"}\r",
 			"\tNew-ADGroup @params"
 		],
