@@ -72,7 +72,7 @@
 			"\tSamAccountName = '${Groupname}'\r",
 			"\tGroupCategory = '${Category}'\r",
 			"\tGroupScope = '${GroupScope}'\r",
-			"\tpath = 'ou=${SubOU},ou=Groups,ou=${ParentOU},dc=bbds,dc=balfourbeatty,dc=com'\r",
+			"\tpath = 'ou=${SubOU},ou=Groups,ou=${ParentOU},dc=fqdn,dc=domain,dc=com'\r",
 			"}\r",
 			"\r",
 			"\tNew-ADGroup @params\r"
