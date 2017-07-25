@@ -43,14 +43,14 @@
 		"body": [
 			"$$OutputObj = New-Object -TypeName psobject -Property $$properties"
 		],
-		"description": "Creates a PSCustomObject"
+		"description": "New-Object with pre-defined Properties"
 	},
 	"Select-Expression": {
 		"prefix": "Select-Expression",
 		"body": [
 			"Select-Object @{name='${PropertyName}';expression={$$_}}"
 		],
-		"description": "Creates a PSCustomObject"
+		"description": "Custom Expression for Select-Object"
 	},
 	"PSCustomObject": {
 		"prefix": "PSCustomObject",
