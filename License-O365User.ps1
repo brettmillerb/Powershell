@@ -1,29 +1,49 @@
 <# Stolen from https://365lab.net/2014/12/17/office-365-assign-individual-parts-of-licenses-based-on-groups-using-powershell/
-Edited to work with AzureADv2 Module
+Reworked to work with AzureADv2 Module
 License a user based on group membership for Office365 #>
 
-$licenses = @{
-    'E1' = @{
-        LicenseSKU = 'STANDARDPACK'
-        Group = 'Test-E1Group'
-        ObjectID = '1a209fe2-133b-4fa3-9064-1becf0a60497'
-    }
-    'E3' = @{
-        LicenseSKU = 'ENTERPRISEPACK'
-        Group = 'Test-E3Group'
-        ObjectID = '4061d1ff-a786-40ae-a86f-87b79495f3bb'
-    }
-    'E5' = @{
-        LicenseSKU = 'ENTERPRISEPREMIUM'
-        Group = 'Test-E5Group'
-        ObjectID = 'df837604-9e43-46fe-b321-d3f59127538c'
-    }     
+#requires -modules AzureAD
+
+<# SkuHashtable to convert SkuId to SkuPartNumber as this is not returned in Get-AzureADUser even though it was in Get-MsolUser
+it's less resource heavy than querying every user solely for the SkuPartNumber #>
+$SkuHashtable = @{}
+Get-AzureADSubscribedSku | ForEach-Object {
+    $key = $_.skuid
+    $value = $_.skupartnumber
+    $SkuHashtable.Add($key,$value)
 }
 
+<# Dynamically create a Hashtable with group:license information for use later in the script
+Group format Test-E1-StandardPack, Test-E3-EnterprisePack
+The only way to correlate the Security Group with the license is via SkuPartNumber #>
+$GroupHashtable = @{}
+Get-AzureADGroup -SearchString 'test-e' | ForEach-Object {
+    $key = $_.displayname
+    $value = @{
+        LicenseSkuPartNumber = $PartNo = (($_.displayname).split("-")[2])
+        LicenseSkuId         = $SkuHashtable.GetEnumerator() | Where-Object {$_.value -EQ $PartNo} | select -ExpandProperty name
+        GroupObjectId        = $_.ObjectID
+    }
+    $GroupHashtable.Add($key,$value)
+}
 
-foreach ($license in $licenses.Keys) {
+<# Get all currently licensed users (Users can have multiple licenses.
+Exclude admin accounts as these have RBAC and PowerBi AzureAnalysis plans assigned. #>
+$licensedusers = get-azureaduser -top 150 | Where-Object {
+    $_.assignedlicenses.skuid -ne $null -and 
+    $_.userprincipalname -notlike 'adm-*'} | ForEach-Object {
+        [pscustomobject]@{
+            userprincipalname = $_.userprincipalname
+            LicenseSKU = $SkuID = $_.assignedlicenses.skuid
+            SkuPartNumber = $SkuHashtable[$SkuID]
+        }
+}
+
+foreach ($license in $GroupHashtable.Keys) {
+    #Get the SKU of each of the licenses
     $sku = Get-AzureADSubscribedSku | Where-Object -FilterScript { $_.skupartnumber -eq $licenses[$license].LicenseSKU }
-    $unlicensedusers = Get-AzureADGroupMember -ObjectId $licenses[$license].ObjectID | Where-Object {($_.assignedlicenses | Measure-Object).Count -lt 1}
+    #Get all members of the Licensing Group
+    $groupmembers = Get-AzureADGroupMember -ObjectId $licenses[$license].ObjectID | Where-Object {($_.assignedlicenses | Measure-Object).Count -lt 1}
 
     if (($sku.prepaidunits.enabled) - ($sku.consumedunits) -lt ($unlicensedusers | Measure-Object).count) {
         Write-Warning "Not enough licenses remaining to license users"
