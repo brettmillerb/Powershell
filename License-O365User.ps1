@@ -9,7 +9,12 @@ it's less resource heavy than querying every user solely for the SkuPartNumber #
 $SkuHashtable = @{}
 Get-AzureADSubscribedSku | ForEach-Object {
     $key = $_.skuid
-    $value = $_.skupartnumber
+    $value = @{
+        SkuPartNumber = $_.skupartnumber
+        EnabledLicenses = $EnabledUnits = $_.prepaidunits.enabled
+        ConsumedUnits = $ConsumedUnits = $_.ConsumedUnits
+        RemainingUnits = $EnabledUnits - $ConsumedUnits
+    }
     $SkuHashtable.Add($key,$value)
 }
 
@@ -21,7 +26,7 @@ Get-AzureADGroup -SearchString 'test-e' | ForEach-Object {
     $key = $_.displayname
     $value = @{
         LicenseSkuPartNumber = $PartNo = (($_.displayname).split("-")[2])
-        LicenseSkuId         = $SkuHashtable.GetEnumerator() | Where-Object {$_.value -EQ $PartNo} | select -ExpandProperty name
+        LicenseSkuId         = $SkuHashtable.GetEnumerator() | Where-Object {$_.value.skupartnumber -EQ $PartNo} | select -ExpandProperty name
         GroupObjectId        = $_.ObjectID
     }
     $GroupHashtable.Add($key,$value)
@@ -35,17 +40,22 @@ $licensedusers = get-azureaduser -top 150 | Where-Object {
         [pscustomobject]@{
             userprincipalname = $_.userprincipalname
             LicenseSKU = $SkuID = $_.assignedlicenses.skuid
-            SkuPartNumber = $SkuHashtable[$SkuID]
+            SkuPartNumber = $SkuHashtable[$SkuID].skupartnumber
         }
 }
 
-foreach ($license in $GroupHashtable.Keys) {
+foreach ($Group in $GroupHashtable.Keys) {
     #Get the SKU of each of the licenses
-    $sku = Get-AzureADSubscribedSku | Where-Object -FilterScript { $_.skupartnumber -eq $licenses[$license].LicenseSKU }
+    #$sku = Get-AzureADSubscribedSku | Where-Object -FilterScript { $_.skupartnumber -eq $GroupHashtable[$Group].licenseskupartnumber }
     #Get all members of the Licensing Group
-    $groupmembers = Get-AzureADGroupMember -ObjectId $licenses[$license].ObjectID | Where-Object {($_.assignedlicenses | Measure-Object).Count -lt 1}
+    $groupmembers = (Get-AzureADGroupMember -ObjectId $GroupHashtable[$Group].GroupObjectId).userprincipalname
+    $grouplicensedusers = ($licensedusers | Where-Object {$_.skupartnumber -eq $GroupHashtable[$group].LicenseSkuPartNumber}).userprincipalname
 
-    if (($sku.prepaidunits.enabled) - ($sku.consumedunits) -lt ($unlicensedusers | Measure-Object).count) {
+    $comparisonobj = Compare-Object -ReferenceObject $groupmembers -DifferenceObject $grouplicensedusers
+
+    
+
+    if ($SkuHashtable[$group].remainingunits -lt ($unlicensedusers | Measure-Object).count) {
         Write-Warning "Not enough licenses remaining to license users"
         break
     }
@@ -53,11 +63,11 @@ foreach ($license in $GroupHashtable.Keys) {
     foreach ($user in $unlicensedusers) {
         Set-AzureADUser -ObjectId $user.userprincipalname -UsageLocation 'GB'
         
-        if ($license -eq 'E5') {
+        if ($Group -eq 'E5') {
             #Set-SkypeE5License -ObjectId $user.userprincipalname
             Write-Host "Setting E5 License on $($user.DisplayName)"
         }
-        elseif ($license -eq 'E3') {
+        elseif ($Group -eq 'E3') {
             #Set-SkypeE1License -ObjectId $user.userprincipalname
             Write-Host "Setting E3 License on $($user.DisplayName)"
         }
