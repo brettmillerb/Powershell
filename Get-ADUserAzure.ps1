@@ -23,7 +23,7 @@ function Get-ADUserAzure {
                    ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNull()]
         [ValidateNotNullOrEmpty()]
-         [ValidateScript({
+        [ValidateScript({
                 try {
                     (Get-aduser -identity $_ -ErrorAction Stop)
                     $true

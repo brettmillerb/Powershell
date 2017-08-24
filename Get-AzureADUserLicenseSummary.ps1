@@ -25,14 +25,12 @@ function Get-AzureADUserLicenseSummary {
     [CmdletBinding()]
 
     Param (
-        [Parameter(
-            Mandatory=$true,
-            Position=0,
-            ValueFromPipeline,
-            ValueFromPipelineByPropertyName=$true)]
+        [Parameter(Mandatory=$true,
+                   Position=0,
+                   ValueFromPipeline,
+                   ValueFromPipelineByPropertyName=$true)]
         [ValidateNotNullOrEmpty()]
-        [string[]]
-        $ObjectID
+        [string[]]$ObjectID
     )
 
     process {

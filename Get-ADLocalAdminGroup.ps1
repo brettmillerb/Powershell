@@ -15,8 +15,7 @@
     Param (
         [Parameter(Mandatory=$true, 
                    ValueFromPipeline=$true)]
-        [string[]]
-        $Computername
+        [string[]]$Computername
     )
 
     Process {

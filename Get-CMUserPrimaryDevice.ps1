@@ -24,12 +24,12 @@ Get-aduser brett.miller | select -ExpandProperty samaccountname | Get-CMUserPrim
                    Position=0,
                    ValueFromPipeline=$true,
                    ValueFromPipelineByPropertyName=$true)]
-        [string]$identity
+        [string[]]$identity
 
     )
     process {
         foreach ($person in $identity) {
-            $userobj = Get-CMUserDeviceAffinity -UserName ("bbds\{0}" -f $person)
+            $userobj = Get-CMUserDeviceAffinity -UserName ("fqdn\{0}" -f $person)
             if ($userobj){
                 [PSCustomObject]@{
                     sAMAccountName = ($userobj.uniqueusername | Select-Object -First 1).substring(5)

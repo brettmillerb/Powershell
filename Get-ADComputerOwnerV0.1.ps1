@@ -17,7 +17,7 @@ function Get-ADComputerOwner
         [Parameter(Mandatory=$false,
                    ValueFromPipeline,
                    ValueFromPipelineByPropertyName=$true)]
-        $Computers
+        [string[]]$Computers
     )
 
     Begin {}

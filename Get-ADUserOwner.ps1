@@ -17,7 +17,7 @@ function Get-ADUserOwner
         [Parameter(Mandatory=$false,
                    ValueFromPipeline,
                    ValueFromPipelineByPropertyName=$true)]
-        $Users
+        [string[]]$Users
     )
 
     Begin {}

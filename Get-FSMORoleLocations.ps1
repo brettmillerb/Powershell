@@ -1,6 +1,6 @@
 function Get-FSMORoleLocation {
-    $ADDomain = Get-ADDomain | select pdcemulator,ridmaster,infrastructuremaster
-    $ADForest = Get-ADForest bbds.balfourbeatty.com | select domainnamingmaster,schemamaster
+    $ADDomain = Get-ADDomain | Select-Object pdcemulator,ridmaster,infrastructuremaster
+    $ADForest = Get-ADForest fqdn.domain.com | Select-Object domainnamingmaster,schemamaster
 
     [PSCustomObject]@{
         PDCEmulator = $ADDomain.pdcemulator

@@ -10,18 +10,17 @@
 
 function Get-FSRM
 {
-    Begin {}
     Process {
         $webClient = New-Object System.Net.WebClient
 
         #Download JSON from API
         $jsonStr = $webClient.DownloadString("https://fsrm.experiant.ca/api/v1/combined")
 
-        #Convert JSON to Customn Object
+        #Convert JSON to Custom Object
         $Raw = ConvertFrom-Json $jsonStr #Contains api
 
         #Add each file extension to an array for output
-        $monitoredextensions = @(ConvertFrom-Json($jsonStr) | % { $_.filters })
+        $monitoredextensions = @(ConvertFrom-Json($jsonStr) | ForEach-Object { $_.filters })
 
         #Create custom object containing info from API
         $properties = @{DateExtracted = ((Get-Date).ToShortDateString())
@@ -32,5 +31,4 @@ function Get-FSRM
         $obj = New-Object -TypeName psobject -Property $properties
         Write-Output $obj
     }
-    End {}
 }
