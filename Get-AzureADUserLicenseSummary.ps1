@@ -40,16 +40,16 @@ function Get-AzureADUserLicenseSummary {
 
             if ($UserLicenses) {
                 [pscustomobject]@{
-                    DisplayName = $userobj.DisplayName
                     UserPrincipalName = $userobj.UserPrincipalName
+                    usagelocation = $userobj.usagelocation
                     Licenses = ($UserLicenses.skupartnumber).replace('STANDARDPACK','ENTERPRISE E1').replace('ENTERPRISEPACK','ENTERPRISE E3').replace('ENTERPRISEPREMIUM','ENTERPRISE E5').replace('SHAREPOINTSTANDARD','SHAREPOINT ONLINE')
                     Plans = ($UserLicenses.serviceplans | Where-Object ProvisioningStatus -EQ Success).serviceplanname
                 }
             }
             else {
                 [PSCustomObject]@{
-                    DisplayName = $userobj.DisplayName
                     UserPrincipalName = $userobj.UserPrincipalName
+                    usagelocation = $userobj.usagelocation
                     Licenses = $null
                     Plans = $null
                 }
