@@ -35,10 +35,12 @@ function Get-AzureADUserLicenseSummary {
 
     process {
         foreach ($user in $ObjectID) {
-            $userobj = Get-AzureADUser -ObjectId $user
-            $UserLicenses = Get-AzureADUserLicenseDetail -ObjectId $user
-
-            if ($UserLicenses) {
+            try {
+                $userobj = Get-AzureADUser -ObjectId $user -ErrorAction stop
+                if ($userobj) {
+                    $UserLicenses = Get-AzureADUserLicenseDetail -ObjectId $user -ErrorAction stop
+                }
+                
                 [pscustomobject]@{
                     UserPrincipalName = $userobj.UserPrincipalName
                     usagelocation = $userobj.usagelocation
@@ -46,10 +48,10 @@ function Get-AzureADUserLicenseSummary {
                     Plans = ($UserLicenses.serviceplans | Where-Object ProvisioningStatus -EQ Success).serviceplanname
                 }
             }
-            else {
+            catch {
                 [PSCustomObject]@{
-                    UserPrincipalName = $userobj.UserPrincipalName
-                    usagelocation = $userobj.usagelocation
+                    UserPrincipalName = $user
+                    usagelocation = $null
                     Licenses = $null
                     Plans = $null
                 }
