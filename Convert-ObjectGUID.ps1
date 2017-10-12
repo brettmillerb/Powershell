@@ -15,4 +15,4 @@ function Convert-ObjectGUID {
             }
         }
      }
-    }
+}
